@@ -3,20 +3,14 @@ package com.schedular.app.entities;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.hibernate.validator.constraints.UniqueElements;
 
 
 @ApiModel(description="All details about user")  //used by swagger for documentation
@@ -29,7 +23,9 @@ public class User {
 	
 	@Size(min=2, message="Name should have atleat 2 characters")
 	@ApiModelProperty(notes="Name should have atleat two character")
-	private String name; 
+	private String name;
+
+	@Column(unique=true)
 	private String email;
 	
 	@JsonIgnore
