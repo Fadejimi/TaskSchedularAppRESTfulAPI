@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,14 +46,18 @@ public class UserController {
 		String reqToken[] = token.split("Bearer ");
 		//User user = userService.getUserToken(reqToken[1]);
 		user.setToken(reqToken[1]);
-		User savedUser = userService.saveUser(user);
-		URI location = ServletUriComponentsBuilder
-					.fromCurrentRequest()
-					.path("/{id}")
-					.buildAndExpand(savedUser.getId())
-					.toUri();
 		
-		return ResponseEntity.created(location).build();
+		if (userService.getUserByEmail(user.getEmail()) == null) {
+			User savedUser = userService.saveUser(user);
+			URI location = ServletUriComponentsBuilder
+						.fromCurrentRequest()
+						.path("/{id}")
+						.buildAndExpand(savedUser.getId())
+						.toUri();
+			
+			return ResponseEntity.created(location).build();
+		}
+		return new ResponseEntity(HttpStatus.CONFLICT);	
 	}
 	
 }
